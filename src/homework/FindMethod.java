@@ -2,9 +2,13 @@ package homework;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Scanner;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import com.sun.tools.classfile.ClassFile;
 import com.sun.tools.classfile.ConstantPool;
@@ -27,15 +31,29 @@ public class FindMethod {
 		System.out.println("Please input the method: ");
 		String input = scanner.nextLine();
 		//
-
-		//
-		ClassFile cf = ClassFile.read(new File(
-				"G:\\homework\\java\\homework\\bin\\homework\\Boy.class"));
-		searchMethodInClass(cf, input);
+		JarFile jarFile=new JarFile(new File("G:\\homework\\java\\123.jar"));
+		Enumeration<JarEntry> entries = jarFile.entries();
+		
+		while (entries.hasMoreElements()) {
+			JarEntry jarEntry = (JarEntry) entries.nextElement();
+			
+			if (jarEntry.getName().endsWith(".class")) {
+				//System.out.println(jarEntry.getName());
+				URL url=new URL("jar:file:G:/homework/java/123.jar!/"+jarEntry.getName());
+				ClassFile cf = ClassFile.read(url.openStream());
+				searchMethodInClass(jarEntry.getName(),cf, input);
+			}
+			
+			
+			
+		}
+	
+	
+		
 
 	}
 
-	public static void searchMethodInClass(ClassFile cf, String input) {
+	public static void searchMethodInClass(String className, ClassFile cf, String input) {
 		List<ConstantString> csList = new ArrayList<>();
 		List<NameAndType> natList = new ArrayList<>();
 		List<Methodref> meList = new ArrayList<>();
@@ -80,9 +98,9 @@ public class FindMethod {
 		}
 		// judge the method is invoked or not
 		if (inCS(input, csList, natList, meList)) {
-			System.out.println(input + " is invoked");
+			System.out.println(input + " is invoked in "+className);
 		} else {
-			System.out.println(input + " is not invoked");
+			System.out.println(input + " is not invoked "+className);
 		}
 	}
 
