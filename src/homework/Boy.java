@@ -5,8 +5,11 @@ public class Boy {
 	private int age;
 	private String name;
 
-	public void say(int abc,String bdf) {
-		System.out.println("hello world");
+	public void say(String friendName) {
+		System.out.println("hello "+friendName);
+		if("".equals("123")){
+			System.exit(0);
+		}
 	}
 
 }
